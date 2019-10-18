@@ -1,3 +1,16 @@
 <resources>
     <string name="app_name">Journal</string>
+    <string name="search_hint">Поиск</string>
+    <string name="name">Имя</string>
+    <string name="surname">Фамилия</string>
+    <string name="patronymic">Отчество</string>
+    <string name="birthday">День рождения</string>
+    <string name="service">Услуга</string>
+    <string name="price">Цена</string>
+    <string name="day_of_visit">День посещения</string>
+    <string name="extra_info">Примечание</string>
+    <string name="other">Другое</string>
+    <string name="discount">Скидка</string>
+    <string name="submit">Добавить</string>
+    <string name="full_name">ФИО</string>
 </resources>
