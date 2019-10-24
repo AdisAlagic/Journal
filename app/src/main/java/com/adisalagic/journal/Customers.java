@@ -1,5 +1,6 @@
 package com.adisalagic.journal;
 
+import android.content.ContentValues;
 import android.os.Bundle;
 
 import java.text.DateFormat;
@@ -23,10 +24,15 @@ public class Customers {
     private String   extraInfo;
     private String   extra;
     private String   sDayOfVisit;
+    private int      id;
 
     Customers() {
-        today  = new Date();
-        sToday = DateFormat.getDateInstance(DateFormat.DATE_FIELD).format(today);
+        today = new Date();
+        DateFormat dateFormat = DateFormat.getDateInstance();
+        Calendar   calendar   = Calendar.getInstance();
+        calendar.setTime(today);
+        dateFormat.setCalendar(calendar);
+        sToday = dateFormat.format(today);
     }
 
     public String getFullName() {
@@ -35,6 +41,10 @@ public class Customers {
 
     public void setFullName(String fullName) {
         this.fullName = fullName;
+    }
+
+    public void setFullName() {
+        this.fullName = surname + " " + name + " " + patronymic;
     }
 
     public String getName() {
@@ -108,7 +118,12 @@ public class Customers {
     }
 
     public String getDayOfVisit() {
+        day = Calendar.getInstance();
         sDayOfVisit = day.get(Calendar.DAY_OF_MONTH) + "." + day.get(Calendar.MONTH) + "." + day.get(Calendar.YEAR);
+        return sDayOfVisit;
+    }
+
+    public String getsDayOfVisit(){
         return sDayOfVisit;
     }
 
@@ -148,6 +163,14 @@ public class Customers {
         sDayOfVisit = day;
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
     @Override
     public void finalize() {
         fullName   = null;
@@ -168,6 +191,7 @@ public class Customers {
 
     public Bundle toBundle() {
         Bundle bundle = new Bundle();
+        setFullName();
         bundle.putString("name", getName());
         bundle.putString("surname", getSurname());
         bundle.putString("patronymic", getPatronymic());
@@ -180,7 +204,8 @@ public class Customers {
         bundle.putString("extraInfo", getExtraInfo());
         bundle.putString("extra", getExtra());
         bundle.putString("other", getExtra());
-        bundle.putString("dayOfVisit", getDayOfVisit());
+        bundle.putString("dayOfVisit", getsDayOfVisit());
+        bundle.putString("fullname", fullName);
         return bundle;
     }
 
@@ -199,5 +224,20 @@ public class Customers {
         customers.setExtra(bundle.getString("other"));
         customers.setsDayOfVisit(bundle.getString("dayOfVisit"));
         return customers;
+    }
+
+    ContentValues toContentValues() {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("full_name", getFullName());
+        contentValues.put("phone_num", getPhoneNum());
+        contentValues.put("price", getPrice());
+        contentValues.put("birthday", getBirthday());
+        contentValues.put("service", getService());
+        contentValues.put("today", getTodayAsString());
+        contentValues.put("discount", getDiscount());
+        contentValues.put("extra_info", getExtraInfo());
+        contentValues.put("extra", getExtra());
+        contentValues.put("day_of_visit", getsDayOfVisit());
+        return contentValues;
     }
 }

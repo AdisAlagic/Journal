@@ -86,6 +86,25 @@
                 tools:layout_editor_absoluteY="82dp" />
 
             <TextView
+                android:id="@+id/phoneNum"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/phoneNum"
+                android:textAlignment="viewStart"
+                android:textSize="18sp"
+                tools:layout_editor_absoluteX="16dp"
+                tools:layout_editor_absoluteY="145dp" />
+
+            <EditText
+                android:id="@+id/t_phoneNum"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="phone"
+                tools:layout_editor_absoluteX="180dp"
+                tools:layout_editor_absoluteY="82dp" />
+
+            <TextView
                 android:id="@+id/birthday"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -95,12 +114,14 @@
                 tools:layout_editor_absoluteX="16dp"
                 tools:layout_editor_absoluteY="145dp" />
 
-            <EditText
+            <TextView
                 android:id="@+id/t_birthday"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="45dp"
+                android:textSize="20sp"
+                android:paddingTop="9dp"
                 android:ems="10"
-                android:inputType="date" />
+                />
 
             <TextView
                 android:id="@+id/service"
@@ -147,14 +168,33 @@
                 tools:layout_editor_absoluteX="16dp"
                 tools:layout_editor_absoluteY="145dp" />
 
-            <EditText
+            <TextView
                 android:id="@+id/t_day_of_visit"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="45dp"
+                android:textSize="20sp"
+                android:paddingTop="9dp"
                 android:ems="10"
-                android:inputType="textPersonName"
-                tools:layout_editor_absoluteX="180dp"
-                tools:layout_editor_absoluteY="82dp" />
+                />
+
+            <TextView
+                android:id="@+id/time_of_visit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/time_of_visit"
+                android:textAlignment="viewStart"
+                android:textSize="18sp"
+                tools:layout_editor_absoluteX="16dp"
+                tools:layout_editor_absoluteY="145dp" />
+
+            <TextView
+                android:id="@+id/t_time_of_visit"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:textSize="20sp"
+                android:paddingTop="9dp"
+                android:ems="10"
+                />
 
             <TextView
                 android:id="@+id/discount"
@@ -214,7 +254,6 @@
                 android:id="@+id/submit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:onClick="submit"
                 android:text="@string/submit" />
 
         </LinearLayout>
