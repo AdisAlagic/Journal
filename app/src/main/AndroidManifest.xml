@@ -19,7 +19,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ViewEntry">
+        <activity android:name=".ViewEntry"
+            android:windowSoftInputMode="adjustNothing"
+            android:screenOrientation="locked">
+
+        </activity>
+        <activity android:name=".HumanEntries"
+            android:windowSoftInputMode="adjustNothing"
+            android:screenOrientation="locked">
 
         </activity>
     </application>

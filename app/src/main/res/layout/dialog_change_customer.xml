@@ -104,6 +104,7 @@
                 app:mask="+7(***)-***-**-**"
                 app:notMaskedSymbol="*"
                 android:inputType="phone"
+                android:digits="01234567890()- "
                 tools:layout_editor_absoluteX="180dp"
                 tools:layout_editor_absoluteY="82dp" />
 
@@ -127,10 +128,10 @@
                 />
 
             <Button
-                android:id="@+id/submit"
+                android:id="@+id/change"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/submit" />
+                android:text="@string/change" />
 
         </LinearLayout>
     </ScrollView>

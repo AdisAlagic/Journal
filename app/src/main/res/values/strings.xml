@@ -15,4 +15,6 @@
     <string name="full_name">ФИО</string>
     <string name="time_of_visit">Время посещения</string>
     <string name="phoneNum">Номер телефона</string>
+    <string name="delete">Удалить</string>
+    <string name="change">Изменить</string>
 </resources>

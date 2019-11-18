@@ -2,6 +2,8 @@ package com.adisalagic.journal;
 
 import android.content.ContentValues;
 import android.os.Bundle;
+import android.util.Log;
+import android.widget.Toast;
 
 import java.text.DateFormat;
 import java.util.Calendar;
@@ -25,6 +27,8 @@ public class Customers {
     private String   extra;
     private String   sDayOfVisit;
     private int      id;
+    private int      id_entry;
+    private String   timeOfVisit;
 
     Customers() {
         today = new Date();
@@ -118,12 +122,12 @@ public class Customers {
     }
 
     public String getDayOfVisit() {
-        day = Calendar.getInstance();
+        day         = Calendar.getInstance();
         sDayOfVisit = day.get(Calendar.DAY_OF_MONTH) + "." + day.get(Calendar.MONTH) + "." + day.get(Calendar.YEAR);
         return sDayOfVisit;
     }
 
-    public String getsDayOfVisit(){
+    public String getsDayOfVisit() {
         return sDayOfVisit;
     }
 
@@ -163,12 +167,28 @@ public class Customers {
         sDayOfVisit = day;
     }
 
+    public String getTimeOfVisit() {
+        return timeOfVisit;
+    }
+
+    public void setTimeOfVisit(String timeOfVisit) {
+        this.timeOfVisit = timeOfVisit;
+    }
+
     public int getId() {
         return id;
     }
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public int getId_entry() {
+        return id_entry;
+    }
+
+    public void setId_entry(int id_entry) {
+        this.id_entry = id_entry;
     }
 
     @Override
@@ -191,10 +211,12 @@ public class Customers {
 
     public Bundle toBundle() {
         Bundle bundle = new Bundle();
-        setFullName();
+        bundle.putInt("id", getId());
+        bundle.putInt("id_entry", getId_entry());
         bundle.putString("name", getName());
         bundle.putString("surname", getSurname());
         bundle.putString("patronymic", getPatronymic());
+        bundle.putString("fullName", getFullName());
         bundle.putString("phoneNum", getPhoneNum());
         bundle.putInt("price", getPrice());
         bundle.putString("birthday", getBirthday());
@@ -203,6 +225,7 @@ public class Customers {
         bundle.putInt("discount", getDiscount());
         bundle.putString("extraInfo", getExtraInfo());
         bundle.putString("extra", getExtra());
+        bundle.putString("time_of_visit", getTimeOfVisit());
         bundle.putString("other", getExtra());
         bundle.putString("dayOfVisit", getsDayOfVisit());
         bundle.putString("fullname", fullName);
@@ -211,10 +234,14 @@ public class Customers {
 
     public static Customers fromBundle(Bundle bundle) {
         Customers customers = new Customers();
+        customers.setId(bundle.getInt("id"));
+        customers.setId_entry(bundle.getInt("id_entry"));
         customers.setName(bundle.getString("name"));
         customers.setSurname(bundle.getString("surname"));
         customers.setPatronymic(bundle.getString("patronymic"));
         customers.setPhoneNum(bundle.getString("phoneNum"));
+        customers.setFullName(bundle.getString("fullName"));
+        customers.setTimeOfVisit(bundle.getString("time_of_visit"));
         customers.setPrice(bundle.getInt("price"));
         customers.setBirthday(bundle.getString("birthday"));
         customers.setService(bundle.getString("service"));
@@ -226,18 +253,50 @@ public class Customers {
         return customers;
     }
 
-    ContentValues toContentValues() {
+    ContentValues toContentValuesCustomer() {
         ContentValues contentValues = new ContentValues();
         contentValues.put("full_name", getFullName());
         contentValues.put("phone_num", getPhoneNum());
-        contentValues.put("price", getPrice());
         contentValues.put("birthday", getBirthday());
+        return contentValues;
+    }
+
+    ContentValues toContentValuesEntry() {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("price", getPrice());
         contentValues.put("service", getService());
         contentValues.put("today", getTodayAsString());
         contentValues.put("discount", getDiscount());
+        contentValues.put("time_of_visit", getTimeOfVisit());
         contentValues.put("extra_info", getExtraInfo());
         contentValues.put("extra", getExtra());
+        contentValues.put("id_people", getId());
         contentValues.put("day_of_visit", getsDayOfVisit());
         return contentValues;
+    }
+
+    public static String[] parseFullName(String fullName) {
+        return fullName.split(" ");
+    }
+
+    void parseFullName() {
+        String[] data = getFullName().split(" ");
+        if (data.length == 3) {
+            setName(data[0]);
+            setSurname(data[1]);
+            setPatronymic(data[2]);
+        } else {
+            Log.e("PARSING", "Error parsing full name");
+        }
+
+    }
+
+    String getPhoneNumAsMuskedText() {
+        return phoneNum
+                .replace('+', '\0')
+                .replace('7', '\0')
+                .replace('(', '\0')
+                .replace(')', '\0')
+                .replace('-', '\0');
     }
 }

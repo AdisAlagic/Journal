@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/constaitLay"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:ignore="Autofill,LabelFor">
+    tools:ignore="Autofill,LabelFor" >
 
     <ScrollView
         android:layout_width="match_parent"
@@ -29,102 +28,131 @@
             tools:layout_editor_absoluteY="0dp">
 
             <TextView
-                android:id="@+id/surname"
+                android:id="@+id/service"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/surname"
+                android:text="@string/service"
                 android:textAlignment="viewStart"
                 android:textSize="18sp"
                 tools:layout_editor_absoluteX="16dp"
                 tools:layout_editor_absoluteY="145dp" />
 
             <EditText
-                android:id="@+id/t_surname"
+                android:id="@+id/t_service"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ems="10"
-                android:inputType="textPersonName"
-                tools:layout_editor_absoluteX="180dp"
-                tools:layout_editor_absoluteY="82dp"
+                android:inputType="textAutoComplete"
                 />
 
             <TextView
                 android:id="@+id/name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/name"
-                android:textAlignment="viewStart"
-                android:textSize="18sp"
-                tools:layout_editor_absoluteX="16dp"
-                tools:layout_editor_absoluteY="82dp" />
-
-            <EditText
-                android:id="@+id/t_name"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:ems="10"
-                android:inputType="textPersonName"
-                tools:layout_editor_absoluteX="180dp"
-                tools:layout_editor_absoluteY="145dp" />
-
-            <TextView
-                android:id="@+id/patronymic"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/patronymic"
+                android:text="@string/price"
                 android:textAlignment="viewStart"
                 android:textSize="18sp"
                 tools:layout_editor_absoluteX="16dp"
                 tools:layout_editor_absoluteY="145dp" />
 
             <EditText
-                android:id="@+id/t_patronymic"
+                android:id="@+id/t_price"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ems="10"
-                android:inputType="textPersonName"
-                tools:layout_editor_absoluteX="180dp"
-                tools:layout_editor_absoluteY="82dp" />
+                android:inputType="numberSigned" />
 
             <TextView
-                android:id="@+id/discount"
+                android:id="@+id/day_of_visit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/phoneNum"
-                android:textAlignment="viewStart"
-                android:textSize="18sp"
-                tools:layout_editor_absoluteX="16dp"
-                tools:layout_editor_absoluteY="145dp" />
-
-            <com.github.pinball83.maskededittext.MaskedEditText
-                android:id="@+id/t_phoneNum"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:ems="10"
-                app:mask="+7(***)-***-**-**"
-                app:notMaskedSymbol="*"
-                android:inputType="phone"
-                tools:layout_editor_absoluteX="180dp"
-                tools:layout_editor_absoluteY="82dp" />
-
-            <TextView
-                android:id="@+id/birthday"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/birthday"
+                android:text="@string/day_of_visit"
                 android:textAlignment="viewStart"
                 android:textSize="18sp"
                 tools:layout_editor_absoluteX="16dp"
                 tools:layout_editor_absoluteY="145dp" />
 
             <TextView
-                android:id="@+id/t_birthday"
+                android:id="@+id/t_day_of_visit"
                 android:layout_width="match_parent"
                 android:layout_height="45dp"
                 android:textSize="20sp"
                 android:paddingTop="9dp"
                 android:ems="10"
                 />
+
+            <TextView
+                android:id="@+id/time_of_visit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/time_of_visit"
+                android:textAlignment="viewStart"
+                android:textSize="18sp"
+                tools:layout_editor_absoluteX="16dp"
+                tools:layout_editor_absoluteY="145dp" />
+
+            <TextView
+                android:id="@+id/t_time_of_visit"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:textSize="20sp"
+                android:paddingTop="9dp"
+                android:ems="10"
+                />
+
+            <TextView
+                android:id="@+id/discount"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/discount"
+                android:textAlignment="viewStart"
+                android:textSize="18sp"
+                tools:layout_editor_absoluteX="16dp"
+                tools:layout_editor_absoluteY="145dp" />
+
+            <EditText
+                android:id="@+id/t_discount"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="numberSigned" />
+
+            <TextView
+                android:id="@+id/extra_info"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/extra_info"
+                android:textAlignment="viewStart"
+                android:textSize="18sp"
+                tools:layout_editor_absoluteX="16dp"
+                tools:layout_editor_absoluteY="145dp" />
+
+            <EditText
+                android:id="@+id/t_extra_info"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="textPersonName"
+                tools:layout_editor_absoluteX="180dp"
+                tools:layout_editor_absoluteY="82dp" />
+
+            <TextView
+                android:id="@+id/other"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/other"
+                android:textAlignment="viewStart"
+                android:textSize="18sp"
+                tools:layout_editor_absoluteX="16dp"
+                tools:layout_editor_absoluteY="145dp" />
+
+            <EditText
+                android:id="@+id/t_other"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:gravity="start|top"
+                android:inputType="textMultiLine" />
 
             <Button
                 android:id="@+id/submit"
