@@ -95,7 +95,8 @@ public class NameCustomer extends Fragment {
                         final Customers customers = dbClass.getCustomerNameById(dbClass.getWritableDatabase(), id);
                         birthday.setText(Html.fromHtml("<u>" + customers.getBirthday()
                                 + "<u>", Html.FROM_HTML_MODE_COMPACT));
-                        phone.setMaskedText(customers.getPhoneNumAsMuskedText());
+                        birthday.setTextColor(Color.BLACK);
+                        phone.setMaskedText(customers.getPhoneNum());
                         birthday.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
@@ -120,24 +121,7 @@ public class NameCustomer extends Fragment {
                             public void onClick(View v) {
                                 customers.setBirthday(birthday.getText().toString());
                                 customers.setId(id);
-                                String sPhone = "+7(";                       // +
-                                                                             // 7
-                                                                             // (
-                                sPhone += phone.getUnmaskedText().toCharArray()[0];
-                                sPhone += phone.getUnmaskedText().toCharArray()[1];
-                                sPhone += phone.getUnmaskedText().toCharArray()[2];
-                                sPhone += ")";                               // )
-                                sPhone += "-";                               // -
-                                sPhone += phone.getUnmaskedText().toCharArray()[3];
-                                sPhone += phone.getUnmaskedText().toCharArray()[4];
-                                sPhone += phone.getUnmaskedText().toCharArray()[5];
-                                sPhone += "-";                               // -
-                                sPhone += phone.getUnmaskedText().toCharArray()[6];
-                                sPhone += phone.getUnmaskedText().toCharArray()[7];
-                                sPhone += "-";                               // -
-                                sPhone += phone.getUnmaskedText().toCharArray()[8];
-                                sPhone += phone.getUnmaskedText().toCharArray()[9];
-                                customers.setPhoneNum(sPhone);
+                                customers.setPhoneNum(phone.getUnmaskedText());
                                 customers.setName(name.getText().toString());
                                 customers.setSurname(surname.getText().toString());
                                 customers.setPatronymic(patronymic.getText().toString());
@@ -176,8 +160,6 @@ public class NameCustomer extends Fragment {
         return rootView;
 
     }
-
-
 
     @Override
     public void onDestroyView() {

@@ -99,6 +99,5 @@ public class ViewEntry extends AppCompatActivity {
 
     public void afterDelete(){
         onBackPressed();
-
     }
 }

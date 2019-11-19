@@ -61,6 +61,11 @@ public class DBClass extends SQLiteOpenHelper {
 
     }
 
+    /**
+     * Sets up table's columns
+     *
+     * @param cursor Needed for init
+     */
     private void setEntryTable(Cursor cursor) {
         ID           = cursor.getColumnIndex("id");
         SERVICE      = cursor.getColumnIndex("service");
@@ -74,31 +79,26 @@ public class DBClass extends SQLiteOpenHelper {
         FULL_NAME = cursor.getColumnIndex("full_name");
     }
 
-    private void setTables(Cursor cursor) {
-        ID           = cursor.getColumnIndex("id");
-        ID_HUMAN     = cursor.getColumnIndex("id_people");
-        FULL_NAME    = cursor.getColumnIndex("full_name");
-        PHONE_NUM    = cursor.getColumnIndex("phone_num");
-        DAY_OF_VISIT = cursor.getColumnIndex("day_of_visit");
-        PRICE        = cursor.getColumnIndex("price"); // TEST IT
-        BIRTHDAY     = cursor.getColumnIndex("birthday");
-        SERVICE      = cursor.getColumnIndex("service");
-        TODAY        = cursor.getColumnIndex("today");
-        DISCOUNT     = cursor.getColumnIndex("discount");
-        EXTRAINFO    = cursor.getColumnIndex("extra_info");
-        EXTRA        = cursor.getColumnIndex("extra");
-    }
 
-    public long addCustomer(SQLiteDatabase db, Bundle customer) {
-        Customers customers = Customers.fromBundle(customer);
-        return addCustomer(db, customers);
-    }
-
+    /**
+     * Adds customer in database
+     *
+     * @param db       database
+     * @param customer customer, that will be add
+     * @return rowId of the new created row
+     */
     public long addCustomer(SQLiteDatabase db, Customers customer) {
         ContentValues contentValues = customer.toContentValuesCustomer();
         return db.insertWithOnConflict("Customer", null, contentValues, SQLiteDatabase.CONFLICT_FAIL);
     }
 
+    /**
+     * Adds entry in database
+     *
+     * @param db        database
+     * @param customers entry, that will be add
+     * @return rowId of the new entry
+     */
     public long addEntry(SQLiteDatabase db, Customers customers) {
         ContentValues contentValues = customers.toContentValuesEntry();
         return db.insertWithOnConflict("Entry", null, contentValues, SQLiteDatabase.CONFLICT_FAIL);
@@ -126,6 +126,7 @@ public class DBClass extends SQLiteOpenHelper {
         return res;
     }
 
+
     public ArrayList<Customers> getFragmentCustomers(SQLiteDatabase db) {
         String               get       = "SELECT id, service, day_of_visit, price, discount FROM Entry";
         ArrayList<Customers> customers = new ArrayList<>();
@@ -146,31 +147,13 @@ public class DBClass extends SQLiteOpenHelper {
         return customers;
     }
 
-    // TODO: 24.10.2019 Redo data base
-/*
-    public Customers getCustomer(SQLiteDatabase db, int id) {
-        Customers customer = new Customers();
-        String    get      = "SELECT * FROM Customer WHERE id = " + id;
-        Cursor    cursor   = db.rawQuery(get, null);
-        setTables(cursor);
-        while (!cursor.isAfterLast()) {
-            customer.setId(id);
-            customer.setService(cursor.getString(SERVICE));
-            customer.setsDayOfVisit(cursor.getString(DAY_OF_VISIT));
-            customer.setPhoneNum(cursor.getString(PHONE_NUM));
-            customer.setsToday(cursor.getString(TODAY));
-            customer.setExtra(cursor.getString(EXTRA));
-            customer.setExtraInfo(cursor.getString(EXTRAINFO));
-            customer.setBirthday(cursor.getString(BIRTHDAY));
-            customer.setDiscount(cursor.getInt(DISCOUNT));
-            customer.setPrice(cursor.getInt(PRICE));
-            customer.setFullName(cursor.getString(FULL_NAME));
-            cursor.moveToNext();
-        }
-        cursor.close();
-        return customer;
-    }
-    */
+    /**
+     * Gives customer
+     * @param db database
+     * @param id id of the entry
+     * @param id_human id of the human
+     * @return customer as <code>Customers</code>
+     */
     public Customers getCustomer(SQLiteDatabase db, int id, int id_human) {
         Customers customer = new Customers();
         String get = "SELECT full_name, phone_num, birthday, Entry.id as " +
@@ -196,6 +179,12 @@ public class DBClass extends SQLiteOpenHelper {
         return customer;
     }
 
+    /**
+     * Gives human id from name
+     * @param db database
+     * @param name Name of the customer
+     * @return id
+     */
     public int getHumanId(SQLiteDatabase db, String name) {
         String   get    = "SELECT id FROM Customer WHERE full_name IS ?";
         String[] args   = {name};
@@ -211,6 +200,11 @@ public class DBClass extends SQLiteOpenHelper {
         return res;
     }
 
+    /**
+     * Gives names for main_activity list
+     * @param db database
+     * @return <code>ArrayList</code> with names
+     */
     public ArrayList<Customers> getNames(SQLiteDatabase db) {
         String               get    = "SELECT full_name, id FROM Customer ORDER BY \"full_name\";";
         Cursor               cursor = db.rawQuery(get, null);
@@ -229,6 +223,12 @@ public class DBClass extends SQLiteOpenHelper {
         return names;
     }
 
+    /**
+     * Gives entries for activity_human_entries
+     * @param db database
+     * @param id_human id of the customer
+     * @return <code>ArrayList</code> with <code>Customers</code>
+     */
     public ArrayList<Customers> getEntries(SQLiteDatabase db, int id_human) {
         String get    = "SELECT * FROM Entry WHERE id_people IS " + id_human;
         Cursor cursor = db.rawQuery(get, null);
@@ -253,13 +253,25 @@ public class DBClass extends SQLiteOpenHelper {
         return entries;
     }
 
+    /**
+     * Deletes a single Entry from DB
+     * @param db database
+     * @param id id of the Entry
+     * @return <code>true</code> if ok, <code>false</code> otherwise
+     */
     public boolean deleteEntry(SQLiteDatabase db, int id) {
         return db.delete("Entry", "id IS " + id, null) > 0;
     }
 
+    /**
+     * Deletes customer and every entry connected with customer
+     * @param db database
+     * @param id id of the customer
+     * @return <code>true</code> if ok, <code>false</code> otherwise
+     */
     public boolean deleteCustomer(SQLiteDatabase db, int id) {
         ArrayList<Customers> list = getEntries(db, id);
-        for (int i = 0; i < list.size(); i++){
+        for (int i = 0; i < list.size(); i++) {
             deleteEntry(db, list.get(i).getId_entry());
         }
         String[] args = {String.valueOf(id)};
@@ -267,13 +279,19 @@ public class DBClass extends SQLiteOpenHelper {
         return true;
     }
 
-    public Customers getCustomerNameById(SQLiteDatabase db, int id){
-        String sql = "SELECT * FROM Customer WHERE id IS ?";
-        String[] args = {String.valueOf(id)};
-        Cursor cursor = db.rawQuery(sql, args);
+    /**
+     * Gives short info about customer
+     * @param db database
+     * @param id id of the customer
+     * @return <code>Customers</code> with <code>Full Name, Phone Number and Birthday</code>
+     */
+    public Customers getCustomerNameById(SQLiteDatabase db, int id) {
+        String    sql       = "SELECT * FROM Customer WHERE id IS ?";
+        String[]  args      = {String.valueOf(id)};
+        Cursor    cursor    = db.rawQuery(sql, args);
         Customers customers = new Customers();
         cursor.moveToFirst();
-        while (!cursor.isAfterLast()){
+        while (!cursor.isAfterLast()) {
             customers.setFullName(cursor.getString(cursor.getColumnIndex("full_name")));
             customers.setPhoneNum(cursor.getString(cursor.getColumnIndex("phone_num")));
             customers.setBirthday(cursor.getString(cursor.getColumnIndex("birthday")));
@@ -283,18 +301,30 @@ public class DBClass extends SQLiteOpenHelper {
         return customers;
     }
 
-    public void changeName(SQLiteDatabase db, ContentValues customer, int id){
+    /**
+     * Changes data about customer
+     * @param db database
+     * @param customer <code>Customers</code> as <code>ContentValues</code> for inserting in DB
+     * @param id id of the Customer
+     */
+    public void changeName(SQLiteDatabase db, ContentValues customer, int id) {
         db.update("Customer", customer, "id IS " + id, null);
     }
 
-    public ArrayList<Customers> searchCustomersByEverything(SQLiteDatabase db, String request){
+    /**
+     * Searches in database customers by everything
+     * @param db database
+     * @param request <code>string</code> with keyword search
+     * @return <code>ArrayList</code> of <code>customers</code> as result of search
+     */
+    public ArrayList<Customers> searchCustomersByEverything(SQLiteDatabase db, String request) {
         ArrayList<Customers> customers = new ArrayList<>();
         request = "%" + request + "%";
-        String sql = "SELECT full_name, id, phone_num, birthday FROM Customer WHERE id LIKE ? OR full_name LIKE ? OR birthday LIKE ? OR phone_num LIKE ?";
-        String[] args = {request, request, request, request};
-        Cursor cursor = db.rawQuery(sql, args);
+        String   sql    = "SELECT full_name, id, phone_num, birthday FROM Customer WHERE id LIKE ? OR full_name LIKE ? OR birthday LIKE ? OR phone_num LIKE ?";
+        String[] args   = {request, request, request, request};
+        Cursor   cursor = db.rawQuery(sql, args);
         cursor.moveToFirst();
-        while (!cursor.isAfterLast()){
+        while (!cursor.isAfterLast()) {
             Customers customer = new Customers();
             customer.setId(cursor.getInt(cursor.getColumnIndex("id")));
             customer.setFullName(getSaveString("full_name", cursor));
@@ -307,7 +337,29 @@ public class DBClass extends SQLiteOpenHelper {
         return customers;
     }
 
-    private String getSaveString(String table_name, Cursor cursor){
-        return cursor.getString(cursor.getColumnIndex(table_name)) == null ? "" : cursor.getString(cursor.getColumnIndex(table_name));
+    /**
+     * Gives NOT NULL string from <code>Cursor</code>
+     * @param column_name In what column we getting string
+     * @param cursor What do we use to get string
+     * @return NOT NULL <code>String</code>
+     */
+    private String getSaveString(String column_name, Cursor cursor) {
+        return cursor.getString(cursor.getColumnIndex(column_name)) == null ? "" : cursor.getString(cursor.getColumnIndex(column_name));
+    }
+
+    public Customers getEntry(SQLiteDatabase database, int id){
+        String sql = "SELECT * FROM Entry WHERE id IS " + id;
+        Cursor cursor = database.rawQuery(sql, null);
+        cursor.moveToFirst();
+        Customers customers = new Customers();
+        while (!cursor.isAfterLast()){
+            customers.setService(getSaveString("service", cursor));
+            customers.setPrice(cursor.getInt(cursor.getColumnIndex("price")));
+            customers.setsDayOfVisit(getSaveString("day_of_visit", cursor));
+            customers.setTimeOfVisit(getSaveString("time_of_visit", cursor));
+            customers.setDiscount();
+            cursor.moveToNext();
+        }
+        cursor.close();
     }
 }

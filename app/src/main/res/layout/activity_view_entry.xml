@@ -65,7 +65,7 @@
     <TextView
         android:id="@+id/other"
         android:layout_width="match_parent"
-        android:layout_height="380dp"
+        android:layout_height="360dp"
         android:textSize="24sp" />
 
 

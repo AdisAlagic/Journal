@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
-import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -21,25 +20,31 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.github.pinball83.maskededittext.MaskedEditText;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
 
 public class MainActivity extends AppCompatActivity {
-    private LinearLayout         list;
-    private EditText             searchBox;
-    private FloatingActionButton fab;
-    private EditText             name, surname, patronymic, phoneNum;
-    private        TextView  birthday;
-    private static Customers customers;
+    private        LinearLayout         list;
+    private        EditText             searchBox;
+    private        FloatingActionButton fab;
+    private        EditText             name;
+    private        EditText             surname;
+    private        EditText             patronymic;
+    private        MaskedEditText       phoneNum;
+    private        TextView             birthday;
+    private static Customers            customers;
 
     public static Customers getCustomers() {
         return customers;
     }
 
+    /**
+     * Refreshes entries in main_activity
+     */
     public void refreshEntries() {
         list.setId(R.id.listOfCustomers);
         FragmentTransaction  ft      = getSupportFragmentManager().beginTransaction();
@@ -55,6 +60,11 @@ public class MainActivity extends AppCompatActivity {
         ft.commit();
     }
 
+    /**
+     * Refreshes entries while searching
+     *
+     * @param names Search results
+     */
     public void refreshEntries(ArrayList<Customers> names) {
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         for (int i = 0; i < getSupportFragmentManager().getFragments().size(); i++) {
@@ -77,6 +87,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+
     @Override
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
@@ -94,9 +105,10 @@ public class MainActivity extends AppCompatActivity {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (searchBox.getText().toString().isEmpty()) {
                     refreshEntries();
+                } else {
+                    refreshEntries(dbClass.searchCustomersByEverything(dbClass.getWritableDatabase(),
+                            searchBox.getText().toString()));
                 }
-                refreshEntries(dbClass.searchCustomersByEverything(dbClass.getWritableDatabase(),
-                        searchBox.getText().toString()));
             }
 
             @Override
@@ -108,10 +120,11 @@ public class MainActivity extends AppCompatActivity {
         refreshEntries();
     }
 
-    private boolean onEnterPressed() {
-        return false;
-    }
-
+    /**
+     * Creates new AlertDialog for adding new customer
+     *
+     * @param view Needed to init AlertDialog
+     */
     public void newEntryCreate(View view) {
         AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
         final View          dialogL = getLayoutInflater().inflate(R.layout.dialog_add_customer, null);
@@ -167,12 +180,18 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Submits new customer into database
+     *
+     * @param view Needed for database init
+     * @return <code>true</code> if ok
+     */
     public boolean submit(View view) {
         customers = new Customers();
         customers.setName(name.getText().toString());
         customers.setSurname(surname.getText().toString());
         customers.setPatronymic(patronymic.getText().toString());
-        customers.setPhoneNum(phoneNum.getText().toString());
+        customers.setPhoneNum(phoneNum.getUnmaskedText());
         customers.setFullName();
         customers.setBirthday(birthday.getText().toString());
 
@@ -187,6 +206,7 @@ public class MainActivity extends AppCompatActivity {
             return false;
         }
     }
+
 
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
