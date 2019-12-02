@@ -5,7 +5,9 @@ import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.Html;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -53,6 +55,31 @@ public class HumanEntries extends AppCompatActivity {
             customers = Customers.fromBundle(bundle);
             mainName.setText(customers.getFullName());
         }
+
+        final DBClass dbClass = new DBClass(this);
+        search.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (search.getText().toString().isEmpty()){
+                    refreshEntries(customers.getId());
+                }else {
+                    refreshEntries(dbClass.searchEntryByEverything(dbClass.getWritableDatabase(),
+                            search.getText().toString(), customers.getId()));
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -136,13 +163,12 @@ public class HumanEntries extends AppCompatActivity {
                         humans.setTimeOfVisit(timeOfVisit.getText().toString());
                         long res = dbClass.addEntry(dbClass.getWritableDatabase(), humans);
                         dialog.dismiss();
-                        refreshEntries(id_human);
+//                        refreshEntries(id_human);
                     }
                 });
                 dialog.show();
             }
         });
-        DBClass dbClass = new DBClass(this);
         refreshEntries(dbClass.getHumanId(dbClass.getWritableDatabase(), customers.getFullName()));
 
     }
@@ -162,14 +188,34 @@ public class HumanEntries extends AppCompatActivity {
             ft.add(list.getId(), customerFragment, null);
         }
         ft.commit();
-
+//        dbClass.backUpDB(this);
     }
 
+    public void refreshEntries(ArrayList<Customers> customers){
+        FragmentTransaction  ft        = getSupportFragmentManager().beginTransaction();
+        for (int i = 0; i < getSupportFragmentManager().getFragments().size(); i++) {
+            ft.remove(getSupportFragmentManager().getFragments().get(i));
+        }
+        for (Customers customer : customers) {
+            CustomerFragment customerFragment = new CustomerFragment
+                    (customer.getPrice(), customer.getDiscount(), customer.getsDayOfVisit(),
+                            customer.getService(), customer.getId_entry(), customer.getId());
+            ft.add(list.getId(), customerFragment, null);
+        }
+        ft.commit();
+    }
+
+//    @Override
+//    protected void onPostResume() {
+//        super.onPostResume();
+//        DBClass dbClass = new DBClass(this);
+//        refreshEntries(dbClass.getHumanId(dbClass.getWritableDatabase(), customers.getFullName()));
+//    }
+
     @Override
-    protected void onPostResume() {
-        super.onPostResume();
-        DBClass dbClass = new DBClass(this);
-        refreshEntries(dbClass.getHumanId(dbClass.getWritableDatabase(), customers.getFullName()));
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        refreshEntries(customers.getId());
     }
 
     @Override
@@ -178,4 +224,6 @@ public class HumanEntries extends AppCompatActivity {
         setContentView(R.layout.activity_human_entries);
 
     }
+
+
 }

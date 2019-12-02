@@ -3,7 +3,6 @@ package com.adisalagic.journal;
 import android.content.ContentValues;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Toast;
 
 import java.text.DateFormat;
 import java.util.Calendar;
@@ -159,7 +158,7 @@ public class Customers {
         return sToday;
     }
 
-    public void setsToday(String sToday) {
+    public void setToday(String sToday) {
         this.sToday = sToday;
     }
 
@@ -245,7 +244,7 @@ public class Customers {
         customers.setPrice(bundle.getInt("price"));
         customers.setBirthday(bundle.getString("birthday"));
         customers.setService(bundle.getString("service"));
-        customers.setsToday(bundle.getString("today"));
+        customers.setToday(bundle.getString("today"));
         customers.setDiscount(bundle.getInt("discount"));
         customers.setExtraInfo(bundle.getString("extraInfo"));
         customers.setExtra(bundle.getString("other"));

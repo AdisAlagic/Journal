@@ -5,24 +5,15 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.os.Bundle;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
 public class DBClass extends SQLiteOpenHelper {
     private int ID;
-    private int FULL_NAME;
-    private int PHONE_NUM;
     private int PRICE;
-    private int ID_HUMAN;
-    private int BIRTHDAY;
     private int SERVICE;
-    private int DAY_OF_VISIT;
-    private int TODAY;
     private int DISCOUNT;
-    private int EXTRAINFO;
-    private int EXTRA;
+
 
     public DBClass(Context context) {
         super(context, "customers", null, 1);
@@ -69,15 +60,10 @@ public class DBClass extends SQLiteOpenHelper {
     private void setEntryTable(Cursor cursor) {
         ID           = cursor.getColumnIndex("id");
         SERVICE      = cursor.getColumnIndex("service");
-        DAY_OF_VISIT = cursor.getColumnIndex("day_of_visit");
         PRICE        = cursor.getColumnIndex("price");
         DISCOUNT     = cursor.getColumnIndex("discount");
     }
 
-    private void setHumanTable(Cursor cursor) {
-        ID        = cursor.getColumnIndex("id");
-        FULL_NAME = cursor.getColumnIndex("full_name");
-    }
 
 
     /**
@@ -87,7 +73,7 @@ public class DBClass extends SQLiteOpenHelper {
      * @param customer customer, that will be add
      * @return rowId of the new created row
      */
-    public long addCustomer(SQLiteDatabase db, Customers customer) {
+    long addCustomer(SQLiteDatabase db, Customers customer) {
         ContentValues contentValues = customer.toContentValuesCustomer();
         return db.insertWithOnConflict("Customer", null, contentValues, SQLiteDatabase.CONFLICT_FAIL);
     }
@@ -99,7 +85,7 @@ public class DBClass extends SQLiteOpenHelper {
      * @param customers entry, that will be add
      * @return rowId of the new entry
      */
-    public long addEntry(SQLiteDatabase db, Customers customers) {
+    long addEntry(SQLiteDatabase db, Customers customers) {
         ContentValues contentValues = customers.toContentValuesEntry();
         return db.insertWithOnConflict("Entry", null, contentValues, SQLiteDatabase.CONFLICT_FAIL);
     }
@@ -123,6 +109,7 @@ public class DBClass extends SQLiteOpenHelper {
         while (!cursor.isAfterLast()) {
             res = cursor.getInt(cursor.getColumnIndex("id"));
         }
+        cursor.close();
         return res;
     }
 
@@ -149,12 +136,13 @@ public class DBClass extends SQLiteOpenHelper {
 
     /**
      * Gives customer
-     * @param db database
-     * @param id id of the entry
+     *
+     * @param db       database
+     * @param id       id of the entry
      * @param id_human id of the human
      * @return customer as <code>Customers</code>
      */
-    public Customers getCustomer(SQLiteDatabase db, int id, int id_human) {
+    Customers getCustomer(SQLiteDatabase db, int id, int id_human) {
         Customers customer = new Customers();
         String get = "SELECT full_name, phone_num, birthday, Entry.id as " +
                 "id_entry, service, day_of_visit, time_of_visit, price, discount, extra, extra_info" +
@@ -168,7 +156,7 @@ public class DBClass extends SQLiteOpenHelper {
             customer.setBirthday(cursor.getString(cursor.getColumnIndex("birthday")));
             customer.setService(cursor.getString(cursor.getColumnIndex("service")));
             customer.setsDayOfVisit(cursor.getString(cursor.getColumnIndex("day_of_visit")));
-            customer.setTimeOfVisit(cursor.getString(cursor.getColumnIndex("time_of_visit"))); // FIXME: 07.11.2019 
+            customer.setTimeOfVisit(cursor.getString(cursor.getColumnIndex("time_of_visit")));
             customer.setPrice(cursor.getInt(cursor.getColumnIndex("price")));
             customer.setDiscount(cursor.getInt(cursor.getColumnIndex("discount")));
             customer.setExtra(cursor.getString(cursor.getColumnIndex("extra")));
@@ -181,11 +169,12 @@ public class DBClass extends SQLiteOpenHelper {
 
     /**
      * Gives human id from name
-     * @param db database
+     *
+     * @param db   database
      * @param name Name of the customer
      * @return id
      */
-    public int getHumanId(SQLiteDatabase db, String name) {
+    int getHumanId(SQLiteDatabase db, String name) {
         String   get    = "SELECT id FROM Customer WHERE full_name IS ?";
         String[] args   = {name};
         Cursor   cursor = db.rawQuery(get, args);
@@ -202,10 +191,11 @@ public class DBClass extends SQLiteOpenHelper {
 
     /**
      * Gives names for main_activity list
+     *
      * @param db database
      * @return <code>ArrayList</code> with names
      */
-    public ArrayList<Customers> getNames(SQLiteDatabase db) {
+    ArrayList<Customers> getNames(SQLiteDatabase db) {
         String               get    = "SELECT full_name, id FROM Customer ORDER BY \"full_name\";";
         Cursor               cursor = db.rawQuery(get, null);
         ArrayList<Customers> names  = new ArrayList<>();
@@ -225,11 +215,12 @@ public class DBClass extends SQLiteOpenHelper {
 
     /**
      * Gives entries for activity_human_entries
-     * @param db database
+     *
+     * @param db       database
      * @param id_human id of the customer
      * @return <code>ArrayList</code> with <code>Customers</code>
      */
-    public ArrayList<Customers> getEntries(SQLiteDatabase db, int id_human) {
+    ArrayList<Customers> getEntries(SQLiteDatabase db, int id_human) {
         String get    = "SELECT * FROM Entry WHERE id_people IS " + id_human;
         Cursor cursor = db.rawQuery(get, null);
         cursor.moveToFirst();
@@ -253,8 +244,18 @@ public class DBClass extends SQLiteOpenHelper {
         return entries;
     }
 
+    public ArrayList<Customers> getEntries(SQLiteDatabase database, int id_human, int from) {
+        ArrayList<Customers> customers = getEntries(database, id_human);
+        ArrayList<Customers> res       = new ArrayList<>();
+        for (int i = from; i < i + 10; i++) {
+            res.set(i, customers.get(i));
+        }
+        return res;
+    }
+
     /**
      * Deletes a single Entry from DB
+     *
      * @param db database
      * @param id id of the Entry
      * @return <code>true</code> if ok, <code>false</code> otherwise
@@ -265,6 +266,7 @@ public class DBClass extends SQLiteOpenHelper {
 
     /**
      * Deletes customer and every entry connected with customer
+     *
      * @param db database
      * @param id id of the customer
      * @return <code>true</code> if ok, <code>false</code> otherwise
@@ -281,11 +283,12 @@ public class DBClass extends SQLiteOpenHelper {
 
     /**
      * Gives short info about customer
+     *
      * @param db database
      * @param id id of the customer
      * @return <code>Customers</code> with <code>Full Name, Phone Number and Birthday</code>
      */
-    public Customers getCustomerNameById(SQLiteDatabase db, int id) {
+    Customers getCustomerNameById(SQLiteDatabase db, int id) {
         String    sql       = "SELECT * FROM Customer WHERE id IS ?";
         String[]  args      = {String.valueOf(id)};
         Cursor    cursor    = db.rawQuery(sql, args);
@@ -303,9 +306,10 @@ public class DBClass extends SQLiteOpenHelper {
 
     /**
      * Changes data about customer
-     * @param db database
+     *
+     * @param db       database
      * @param customer <code>Customers</code> as <code>ContentValues</code> for inserting in DB
-     * @param id id of the Customer
+     * @param id       id of the Customer
      */
     public void changeName(SQLiteDatabase db, ContentValues customer, int id) {
         db.update("Customer", customer, "id IS " + id, null);
@@ -313,11 +317,12 @@ public class DBClass extends SQLiteOpenHelper {
 
     /**
      * Searches in database customers by everything
-     * @param db database
+     *
+     * @param db      database
      * @param request <code>string</code> with keyword search
      * @return <code>ArrayList</code> of <code>customers</code> as result of search
      */
-    public ArrayList<Customers> searchCustomersByEverything(SQLiteDatabase db, String request) {
+    ArrayList<Customers> searchCustomersByEverything(SQLiteDatabase db, String request) {
         ArrayList<Customers> customers = new ArrayList<>();
         request = "%" + request + "%";
         String   sql    = "SELECT full_name, id, phone_num, birthday FROM Customer WHERE id LIKE ? OR full_name LIKE ? OR birthday LIKE ? OR phone_num LIKE ?";
@@ -339,27 +344,111 @@ public class DBClass extends SQLiteOpenHelper {
 
     /**
      * Gives NOT NULL string from <code>Cursor</code>
-     * @param column_name In what column we getting string
-     * @param cursor What do we use to get string
+     *
+     * @param column_name From what column we getting string
+     * @param cursor      What do we use to get string
      * @return NOT NULL <code>String</code>
      */
     private String getSaveString(String column_name, Cursor cursor) {
         return cursor.getString(cursor.getColumnIndex(column_name)) == null ? "" : cursor.getString(cursor.getColumnIndex(column_name));
     }
 
-    public Customers getEntry(SQLiteDatabase database, int id){
-        String sql = "SELECT * FROM Entry WHERE id IS " + id;
+    /**
+     * Gives full entry
+     *
+     * @param database database
+     * @param id       id of the entry
+     * @return <code>Customers</code>
+     */
+    public Customers getEntry(SQLiteDatabase database, int id) {
+        String sql    = "SELECT * FROM Entry WHERE id IS " + id;
         Cursor cursor = database.rawQuery(sql, null);
         cursor.moveToFirst();
         Customers customers = new Customers();
-        while (!cursor.isAfterLast()){
+        while (!cursor.isAfterLast()) {
             customers.setService(getSaveString("service", cursor));
             customers.setPrice(cursor.getInt(cursor.getColumnIndex("price")));
             customers.setsDayOfVisit(getSaveString("day_of_visit", cursor));
             customers.setTimeOfVisit(getSaveString("time_of_visit", cursor));
-            customers.setDiscount();
+            customers.setDiscount(cursor.getInt(cursor.getColumnIndex("discount")));
+            customers.setToday(getSaveString("today", cursor));
+            customers.setExtra(getSaveString("extra", cursor));
+            customers.setExtraInfo(getSaveString("extra_info", cursor));
             cursor.moveToNext();
         }
         cursor.close();
+        return customers;
     }
+
+    public ArrayList<Customers> searchEntryByEverything(SQLiteDatabase db, String request, int idPeople) {
+        String sql = "SELECT price, discount, day_of_visit, service FROM Entry WHERE (id LIKE ? OR " +
+                "service LIKE ? OR day_of_visit LIKE ? OR today LIKE ? OR price LIKE ? OR discount LIKE ?" +
+                "OR extra LIKE ? OR extra_info LIKE ?) AND id_people IS " + idPeople;
+        request = "%" + request + "%";
+        ArrayList<Customers> customers = new ArrayList<>();
+        String[]             args      = {request, request, request, request, request, request, request, request};
+        Cursor               cursor    = db.rawQuery(sql, args);
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()) {
+            Customers customer = new Customers();
+            customer.setPrice(cursor.getInt(cursor.getColumnIndex("price")));
+            customer.setDiscount(cursor.getInt(cursor.getColumnIndex("discount")));
+            customer.setsDayOfVisit(getSaveString("day_of_visit", cursor));
+            customer.setService(getSaveString("service", cursor));
+            customers.add(customer);
+            cursor.moveToNext();
+        }
+        cursor.close();
+        return customers;
+    }
+
+    public void changeEntry(SQLiteDatabase db, ContentValues contentValues, int id_human, int id_entry) {
+        db.update("Entry", contentValues, "id IS " + id_entry + " AND id_people IS " + id_human, null);
+    }
+
+//    public void backUpDB(Activity activity) {
+//        if (ContextCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+//                != PackageManager.PERMISSION_GRANTED) {
+//
+//            if (ActivityCompat.shouldShowRequestPermissionRationale(activity, Manifest.permission_group.STORAGE)){
+//
+//            }else {
+//                ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission_group.STORAGE},
+//                        1);
+//            }
+//        }
+//
+//        File    file    = new File(Environment.getExternalStorageDirectory() + File.separator + activity.getResources().getString(R.string.app_name) + "/customersb");
+//        File    dbFile  = new File(getWritableDatabase().getPath());
+//        boolean success = true;
+//        if (!file.exists()) {
+//            success = file.mkdirs();
+//        }
+//        OutputStream    stream          = null;
+//        FileInputStream fileInputStream = null;
+//        try {
+//            file.createNewFile();
+//            stream          = new FileOutputStream(file);
+//            fileInputStream = new FileInputStream(dbFile);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//
+//        if (success) {
+//            byte[] buffer = new byte[1024];
+//            int    length;
+//            try {
+//                assert fileInputStream != null;
+//                while ((length = fileInputStream.read(buffer)) > 0) {
+//                    stream.write(buffer, 0, length);
+//                }
+//                stream.flush();
+//                stream.close();
+//                fileInputStream.close();
+//            } catch (Exception e) {
+//                //ignored
+//            }
+//
+//        }
+//    }
 }
