@@ -135,6 +135,12 @@ public class NameCustomer extends Fragment {
                         dialog1.show();
                     }
                 });
+                builder.setNegativeButton(answers[2], new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
                 builder.setNeutralButton(answers[1], new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -144,12 +150,6 @@ public class NameCustomer extends Fragment {
                         } else {
                             Toast.makeText(v.getContext(), "Что-то пошло не так", Toast.LENGTH_SHORT).show();
                         }
-                    }
-                });
-                builder.setNegativeButton(answers[2], new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
                     }
                 });
                 AlertDialog dialog = builder.create();

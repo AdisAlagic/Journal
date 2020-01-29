@@ -98,6 +98,7 @@ public class DBClass extends SQLiteOpenHelper {
         while (!cursor.isAfterLast()) {
             res = cursor.getInt(cursor.getColumnIndex("id"));
         }
+        cursor.close();
         return res;
     }
 
@@ -150,7 +151,7 @@ public class DBClass extends SQLiteOpenHelper {
         Cursor cursor = db.rawQuery(get, null);
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
-            customer.setId(cursor.getInt(cursor.getColumnIndex("id_entry")));
+            customer.setId_entry(cursor.getInt(cursor.getColumnIndex("id_entry")));
             customer.setFullName(cursor.getString(cursor.getColumnIndex("full_name")));
             customer.setPhoneNum(cursor.getString(cursor.getColumnIndex("phone_num")));
             customer.setBirthday(cursor.getString(cursor.getColumnIndex("birthday")));

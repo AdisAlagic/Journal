@@ -1,7 +1,5 @@
 package com.adisalagic.journal;
 
-import android.app.DatePickerDialog;
-import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -10,12 +8,9 @@ import android.text.Html;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.TimePicker;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
@@ -24,12 +19,8 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import java.text.DateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
-
-import static com.adisalagic.journal.MainActivity.getCustomers;
 
 public class HumanEntries extends AppCompatActivity {
     FloatingActionButton fab;
@@ -66,9 +57,9 @@ public class HumanEntries extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (search.getText().toString().isEmpty()){
+                if (search.getText().toString().isEmpty()) {
                     refreshEntries(customers.getId());
-                }else {
+                } else {
                     refreshEntries(dbClass.searchEntryByEverything(dbClass.getWritableDatabase(),
                             search.getText().toString(), customers.getId()));
                 }
@@ -102,59 +93,24 @@ public class HumanEntries extends AppCompatActivity {
 
                 dayOfVisit.setTextColor(Color.BLACK);
                 timeOfVisit.setTextColor(Color.BLACK);
-                dayOfVisit.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        DatePickerDialog datePickerDialog = new DatePickerDialog(v.getContext());
-                        datePickerDialog.setOnDateSetListener(new DatePickerDialog.OnDateSetListener() {
-                            @Override
-                            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                                Calendar calendar = Calendar.getInstance();
-                                calendar.set(year, month, dayOfMonth);
-                                DateFormat format = DateFormat.getDateInstance();
-                                format.setCalendar(calendar);
-                                getCustomers().setsDayOfVisit(format.format(calendar.getTime()));
-                                dayOfVisit.setText(Html.fromHtml("<u>" + format.format(calendar.getTime()) + "<u>", Html.FROM_HTML_MODE_COMPACT));
-                            }
-                        });
-                        datePickerDialog.show();
-                    }
-                });
+                dayOfVisit.setOnClickListener(new ClickListeners.DayOfVisit(dayOfVisit));
 
-                timeOfVisit.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        TimePickerDialog dialog = new TimePickerDialog(v.getContext(), new TimePickerDialog.OnTimeSetListener() {
-                            @Override
-                            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                                TimeService timeService = new TimeService(hourOfDay, minute);
-                                timeOfVisit.setText(timeService.toString(true));
-                            }
-                        }, 0, 0, true);
-                        dialog.show();
-                    }
-                });
+                timeOfVisit.setOnClickListener(new ClickListeners.Time(timeOfVisit));
                 builder.setView(view);
                 final AlertDialog dialog = builder.create();
                 ok.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        DBClass dbClass = new DBClass(view.getContext());
-                        Customers humans = new Customers();
-                        if (price.getText().toString().isEmpty()){
+                        DBClass   dbClass = new DBClass(view.getContext());
+                        Customers humans  = new Customers();
+                        if (price.getText().toString().isEmpty()) {
                             price.setText("0");
                         }
-                        if (discount.getText().toString().isEmpty()){
+                        if (discount.getText().toString().isEmpty()) {
                             discount.setText("0");
                         }
                         int id_human = dbClass.getHumanId(dbClass.getWritableDatabase(), customers.getFullName());
                         humans.setService(service.getText().toString());
-                        try {
-                            humans.setPrice(Integer.parseInt(price.getText().toString()));
-                            humans.setDiscount(Integer.parseInt(discount.getText().toString()));
-                        }catch (Exception e){
-                            Toast.makeText(v.getContext(), "Слишком большое число!", Toast.LENGTH_SHORT).show();
-                        }
                         humans.setExtraInfo(extraInfo.getText().toString());
                         humans.setExtra(extra.getText().toString());
                         humans.setId_entry(customers.getId());
@@ -163,7 +119,7 @@ public class HumanEntries extends AppCompatActivity {
                         humans.setTimeOfVisit(timeOfVisit.getText().toString());
                         long res = dbClass.addEntry(dbClass.getWritableDatabase(), humans);
                         dialog.dismiss();
-//                        refreshEntries(id_human);
+                        refreshEntries(id_human);
                     }
                 });
                 dialog.show();
@@ -191,8 +147,8 @@ public class HumanEntries extends AppCompatActivity {
 //        dbClass.backUpDB(this);
     }
 
-    public void refreshEntries(ArrayList<Customers> customers){
-        FragmentTransaction  ft        = getSupportFragmentManager().beginTransaction();
+    public void refreshEntries(ArrayList<Customers> customers) {
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         for (int i = 0; i < getSupportFragmentManager().getFragments().size(); i++) {
             ft.remove(getSupportFragmentManager().getFragments().get(i));
         }
@@ -212,11 +168,6 @@ public class HumanEntries extends AppCompatActivity {
 //        refreshEntries(dbClass.getHumanId(dbClass.getWritableDatabase(), customers.getFullName()));
 //    }
 
-    @Override
-    public void onWindowFocusChanged(boolean hasFocus) {
-        super.onWindowFocusChanged(hasFocus);
-        refreshEntries(customers.getId());
-    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -225,5 +176,12 @@ public class HumanEntries extends AppCompatActivity {
 
     }
 
-
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_CANCELED) {
+            DBClass dbClass = new DBClass(this);
+            refreshEntries(dbClass.getHumanId(dbClass.getWritableDatabase(), customers.getFullName()));
+        }
+    }
 }

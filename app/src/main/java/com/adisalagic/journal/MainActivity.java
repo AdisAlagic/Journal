@@ -171,6 +171,9 @@ public class MainActivity extends AppCompatActivity {
         ok.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (name.getText().toString().toLowerCase().equals("jojo")) {
+                    throw new JoJoReferenceException();
+                }
                 if (submit(v)) {
                     dialog.dismiss();
                 }
@@ -207,12 +210,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
-    @Override
-    public void onWindowFocusChanged(boolean hasFocus) {
-        super.onWindowFocusChanged(hasFocus);
-        refreshEntries();
-    }
 
     @Override
     protected void onPostResume() {

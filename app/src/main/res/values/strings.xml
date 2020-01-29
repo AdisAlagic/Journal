@@ -8,8 +8,8 @@
     <string name="service">Услуга</string>
     <string name="price">Цена</string>
     <string name="day_of_visit">День посещения</string>
-    <string name="extra_info">Примечание</string>
-    <string name="other">Другое</string>
+    <string name="extra_info">Краткое примечание</string>
+    <string name="other">Примечание</string>
     <string name="discount">Скидка</string>
     <string name="submit">Добавить</string>
     <string name="full_name">ФИО</string>
