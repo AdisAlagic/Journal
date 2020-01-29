@@ -138,7 +138,7 @@ public class NameCustomer extends Fragment {
                 builder.setNegativeButton(answers[2], new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
+                        dialog.cancel();
                     }
                 });
                 builder.setNeutralButton(answers[1], new DialogInterface.OnClickListener() {

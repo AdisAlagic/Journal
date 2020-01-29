@@ -191,6 +191,16 @@ public class MainActivity extends AppCompatActivity {
      */
     public boolean submit(View view) {
         customers = new Customers();
+        if (name.getText().toString().isEmpty()) {
+            Toast.makeText(this, "Имя не может быть пустым!", Toast.LENGTH_SHORT).show();
+            return false;
+        } else if (surname.getText().toString().isEmpty()) {
+            Toast.makeText(this, "Фамилия не может быть пустой!", Toast.LENGTH_SHORT).show();
+            return false;
+        } else if (patronymic.getText().toString().isEmpty()) {
+            Toast.makeText(this, "Отчество не может быть пустым!", Toast.LENGTH_SHORT).show();
+            return false;
+        }
         customers.setName(name.getText().toString());
         customers.setSurname(surname.getText().toString());
         customers.setPatronymic(patronymic.getText().toString());
@@ -215,6 +225,13 @@ public class MainActivity extends AppCompatActivity {
     protected void onPostResume() {
         super.onPostResume();
         refreshEntries();
+    }
 
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus) {
+            refreshEntries();
+        }
     }
 }
