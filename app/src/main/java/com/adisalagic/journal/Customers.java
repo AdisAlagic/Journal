@@ -15,7 +15,7 @@ public class Customers {
     private String   surname;
     private String   patronymic;
     private String   phoneNum;
-    private int      price;
+    private String   price;
     private String   birthday;
     private String   service;
     private Date     today;
@@ -106,11 +106,11 @@ public class Customers {
         this.today = today;
     }
 
-    public int getPrice() {
+    public String getPrice() {
         return price;
     }
 
-    public void setPrice(int price) {
+    public void setPrice(String price) {
         this.price = price;
     }
 
@@ -197,7 +197,7 @@ public class Customers {
         surname    = null;
         patronymic = null;
         phoneNum   = null;
-        price      = 0;
+        price      = null;
         birthday   = null;
         service    = null;
         today      = null;
@@ -217,7 +217,7 @@ public class Customers {
         bundle.putString("patronymic", getPatronymic());
         bundle.putString("fullName", getFullName());
         bundle.putString("phoneNum", getPhoneNum());
-        bundle.putInt("price", getPrice());
+        bundle.putString("price", getPrice());
         bundle.putString("birthday", getBirthday());
         bundle.putString("service", getService());
         bundle.putString("today", getTodayAsString());
@@ -241,7 +241,7 @@ public class Customers {
         customers.setPhoneNum(bundle.getString("phoneNum"));
         customers.setFullName(bundle.getString("fullName"));
         customers.setTimeOfVisit(bundle.getString("time_of_visit"));
-        customers.setPrice(bundle.getInt("price"));
+        customers.setPrice(bundle.getString("price"));
         customers.setBirthday(bundle.getString("birthday"));
         customers.setService(bundle.getString("service"));
         customers.setToday(bundle.getString("today"));

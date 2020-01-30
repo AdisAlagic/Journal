@@ -156,7 +156,7 @@ public class ViewEntry extends AppCompatActivity {
                         if (price.getText().toString().isEmpty()) {
                             price.setText("0");
                         }
-                        updatedCustomer.setPrice(Integer.parseInt(price.getText().toString()));
+                        updatedCustomer.setPrice(price.getText().toString());
                         updatedCustomer.setsDayOfVisit(dayOfVisit.getText().toString());
                         updatedCustomer.setTimeOfVisit(timeOfVisit.getText().toString());
                         if (discount.getText().toString().isEmpty()) {

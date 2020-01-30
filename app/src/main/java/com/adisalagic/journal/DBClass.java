@@ -49,7 +49,15 @@ public class DBClass extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        switch (oldVersion) {
+            case 1:
+                db.execSQL("create table Entry_dg_tmp( id INTEGER not null primary key autoincrement, id_people INTEGER not null references Customer on delete cascade,service TEXT(255),day_of_visit TEXT(255),time_of_visit TEXT(10),today TEXT(255),price TEXT,discount INTEGER,extra TEXT(255),extra_info TEXT);");
+                db.execSQL("insert into Entry_dg_tmp(id, id_people, service, day_of_visit, time_of_visit, today, price, discount, extra, extra_info) select id, id_people, service, day_of_visit, time_of_visit, today, price, discount, extra, extra_info from Entry;");
+                db.execSQL("drop table Entry;");
+                db.execSQL("alter table Entry_dg_tmp rename to Entry;");
 
+                break;
+        }
     }
 
     /**
@@ -125,7 +133,7 @@ public class DBClass extends SQLiteOpenHelper {
             Customers customer = new Customers();
             customer.setId(cursor.getInt(ID));
             customer.setService(cursor.getString(SERVICE));
-            customer.setPrice(cursor.getInt(PRICE));
+            customer.setPrice(cursor.getString(PRICE));
             customer.setDiscount(cursor.getInt(DISCOUNT));
             customers.add(customer);
             customers.add(customer);
@@ -158,7 +166,7 @@ public class DBClass extends SQLiteOpenHelper {
             customer.setService(cursor.getString(cursor.getColumnIndex("service")));
             customer.setsDayOfVisit(cursor.getString(cursor.getColumnIndex("day_of_visit")));
             customer.setTimeOfVisit(cursor.getString(cursor.getColumnIndex("time_of_visit")));
-            customer.setPrice(cursor.getInt(cursor.getColumnIndex("price")));
+            customer.setPrice(cursor.getString(cursor.getColumnIndex("price")));
             customer.setDiscount(cursor.getInt(cursor.getColumnIndex("discount")));
             customer.setExtra(cursor.getString(cursor.getColumnIndex("extra")));
             customer.setExtraInfo(cursor.getString(cursor.getColumnIndex("extra_info")));
@@ -234,7 +242,7 @@ public class DBClass extends SQLiteOpenHelper {
             customers.setService(cursor.getString(cursor.getColumnIndex("service")));
             customers.setsDayOfVisit(cursor.getString(cursor.getColumnIndex("day_of_visit")));
             customers.setTimeOfVisit(cursor.getString(cursor.getColumnIndex("time_of_visit")));
-            customers.setPrice(cursor.getInt(cursor.getColumnIndex("price")));
+            customers.setPrice(cursor.getString(cursor.getColumnIndex("price")));
             customers.setDiscount(cursor.getInt(cursor.getColumnIndex("discount")));
             customers.setExtra(cursor.getString(cursor.getColumnIndex("extra")));
             customers.setExtraInfo(cursor.getString(cursor.getColumnIndex("extra_info")));
@@ -368,7 +376,7 @@ public class DBClass extends SQLiteOpenHelper {
         Customers customers = new Customers();
         while (!cursor.isAfterLast()) {
             customers.setService(getSaveString("service", cursor));
-            customers.setPrice(cursor.getInt(cursor.getColumnIndex("price")));
+            customers.setPrice(cursor.getString(cursor.getColumnIndex("price")));
             customers.setsDayOfVisit(getSaveString("day_of_visit", cursor));
             customers.setTimeOfVisit(getSaveString("time_of_visit", cursor));
             customers.setDiscount(cursor.getInt(cursor.getColumnIndex("discount")));
@@ -392,7 +400,7 @@ public class DBClass extends SQLiteOpenHelper {
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
             Customers customer = new Customers();
-            customer.setPrice(cursor.getInt(cursor.getColumnIndex("price")));
+            customer.setPrice(cursor.getString(cursor.getColumnIndex("price")));
             customer.setDiscount(cursor.getInt(cursor.getColumnIndex("discount")));
             customer.setsDayOfVisit(getSaveString("day_of_visit", cursor));
             customer.setService(getSaveString("service", cursor));

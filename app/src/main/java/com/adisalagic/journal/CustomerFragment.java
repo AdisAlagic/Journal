@@ -146,7 +146,7 @@ public class CustomerFragment extends Fragment {
                                 if (price.getText().toString().isEmpty()) {
                                     price.setText("0");
                                 }
-                                updatedCustomer.setPrice(Integer.parseInt(price.getText().toString()));
+                                updatedCustomer.setPrice(price.getText().toString());
                                 updatedCustomer.setsDayOfVisit(dayOfVisit.getText().toString());
                                 updatedCustomer.setTimeOfVisit(timeOfVisit.getText().toString());
                                 if (discount.getText().toString().isEmpty()) {
@@ -171,9 +171,9 @@ public class CustomerFragment extends Fragment {
         return rootView;
     }
 
-    CustomerFragment(int price, int discount, String dayOfVisit, String service, int id, int humanId) {
-        sPrice       = "Цена: " + price + "₽";
-        sRowPrice    = String.valueOf(price);
+    CustomerFragment(String price, int discount, String dayOfVisit, String service, int id, int humanId) {
+        sPrice       = "Цена: " + price;
+        sRowPrice    = price;
         sDiscount    = "Скидка: " + discount + "₽";
         sRowDiscount = String.valueOf(discount);
         sDayOfVisit  = dayOfVisit;
