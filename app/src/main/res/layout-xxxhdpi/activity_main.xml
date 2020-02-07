@@ -64,4 +64,18 @@
         app:srcCompat="@drawable/ic_add_black_24dp"
         app:useCompatPadding="true"
         android:focusable="true" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/restore"
+        android:layout_width="56dp"
+        android:layout_height="75dp"
+        android:layout_marginStart="299dp"
+        android:layout_marginTop="450dp"
+        android:clickable="true"
+        app:layout_constraintBottom_toTopOf="@+id/floatingActionButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/search"
+        app:srcCompat="@drawable/ic_arrow_upward_black_24dp"
+        android:focusable="true" />
 </androidx.constraintlayout.widget.ConstraintLayout>

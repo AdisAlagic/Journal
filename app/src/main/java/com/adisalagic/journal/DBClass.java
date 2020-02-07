@@ -5,7 +5,13 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.os.Environment;
+import android.widget.Toast;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 
 public class DBClass extends SQLiteOpenHelper {
@@ -66,12 +72,11 @@ public class DBClass extends SQLiteOpenHelper {
      * @param cursor Needed for init
      */
     private void setEntryTable(Cursor cursor) {
-        ID           = cursor.getColumnIndex("id");
-        SERVICE      = cursor.getColumnIndex("service");
-        PRICE        = cursor.getColumnIndex("price");
-        DISCOUNT     = cursor.getColumnIndex("discount");
+        ID       = cursor.getColumnIndex("id");
+        SERVICE  = cursor.getColumnIndex("service");
+        PRICE    = cursor.getColumnIndex("price");
+        DISCOUNT = cursor.getColumnIndex("discount");
     }
-
 
 
     /**
@@ -413,6 +418,58 @@ public class DBClass extends SQLiteOpenHelper {
 
     public void changeEntry(SQLiteDatabase db, ContentValues contentValues, int id_human, int id_entry) {
         db.update("Entry", contentValues, "id IS " + id_entry + " AND id_people IS " + id_human, null);
+    }
+
+    public void backUpBD(Context context) {
+        try {
+            File sd   = Environment.getExternalStorageDirectory();
+            File data = Environment.getDataDirectory();
+
+            if (sd.canWrite()) {
+                String currentDBPath = "//data//com.adisalagic.journal//databases//customers";
+                String backupDBPath  = "customers";
+                File   currentDB     = new File(data, currentDBPath);
+                File   backupDB      = new File(sd, backupDBPath);
+                if (!backupDB.exists()) {
+                    backupDB.createNewFile();
+                }
+                if (currentDB.exists()) {
+                    FileChannel src = new FileInputStream(currentDB).getChannel();
+                    FileChannel dst = new FileOutputStream(backupDB).getChannel();
+                    dst.transferFrom(src, 0, src.size());
+                    src.close();
+                    dst.close();
+                }
+            }
+        } catch (Exception e) {
+            Toast.makeText(context, "Не удалось скопировать Базу Данных!", Toast.LENGTH_LONG).show();
+        }
+        Toast.makeText(context, "База данных успешно скопирована!", Toast.LENGTH_SHORT).show();
+    }
+
+    public void restore(Context context) {
+        try {
+            File sd   = Environment.getExternalStorageDirectory();
+            File data = Environment.getDataDirectory();
+
+            if (sd.canWrite()) {
+                String currentDBPath = "//data//com.adisalagic.journal//databases//customers";
+                String backupDBPath  = "customers";
+                File   currentDB     = new File(data, currentDBPath);
+                File   backupDB      = new File(sd, backupDBPath);
+
+                if (currentDB.exists()) {
+                    FileChannel src = new FileInputStream(backupDB).getChannel();
+                    FileChannel dst = new FileOutputStream(currentDB).getChannel();
+                    dst.transferFrom(src, 0, src.size());
+                    src.close();
+                    dst.close();
+                    Toast.makeText(context, "База данных успешно скопирована!", Toast.LENGTH_SHORT).show();
+                }
+            }
+        } catch (Exception e) {
+            //ignored
+        }
     }
 
 //    public void backUpDB(Activity activity) {

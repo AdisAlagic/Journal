@@ -102,6 +102,7 @@ public class HumanEntries extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         DBClass   dbClass = new DBClass(view.getContext());
+                        dbClass.backUpBD(v.getContext());
                         Customers humans  = new Customers();
                         if (price.getText().toString().isEmpty()) {
                             price.setText("0");

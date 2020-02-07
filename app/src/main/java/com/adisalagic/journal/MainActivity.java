@@ -1,6 +1,9 @@
 package com.adisalagic.journal;
 
+import android.Manifest;
 import android.app.DatePickerDialog;
+import android.content.DialogInterface;
+import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -15,9 +18,12 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.github.pinball83.maskededittext.MaskedEditText;
@@ -41,6 +47,34 @@ public class MainActivity extends AppCompatActivity {
     public static Customers getCustomers() {
         return customers;
     }
+
+
+    public void askPermission() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission_group.STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE}, PackageManager.PERMISSION_GRANTED);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case 0:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+//                    new DBClass(this).backUpBD(this);
+                    break;
+                }
+            default:
+                Toast.makeText(this,
+                        "Нужно разрешение на использования памяти для резервного копирования базы данных",
+                        Toast.LENGTH_LONG).show();
+        }
+    }
+
+
 
     /**
      * Refreshes entries in main_activity
@@ -83,8 +117,38 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         list      = findViewById(R.id.listOfCustomers);
         searchBox = findViewById(R.id.search);
-        fab       = findViewById(R.id.floatingActionButton);
-
+        fab       = findViewById(R.id.restore);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(final View v) {
+                final DBClass       dbClass = new DBClass(v.getContext());
+                AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
+                builder.setMessage("Вы хотите восстановить базу данных?");
+                builder.setPositiveButton("Да", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dbClass.restore(v.getContext());
+                        Toast.makeText(v.getContext(), "Успешно!", Toast.LENGTH_LONG).show();
+                        dialog.dismiss();
+                    }
+                });
+                builder.setNegativeButton("Нет", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                builder.setNeutralButton("Хочу сохранить!", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dbClass.backUpBD(v.getContext());
+                        dialog.dismiss();
+                    }
+                });
+                builder.create().show();
+                refreshEntries();
+            }
+        });
     }
 
 
@@ -223,12 +287,17 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
     @Override
-    protected void onPostResume() {
-        super.onPostResume();
-        refreshEntries();
+    protected void onStart() {
+        super.onStart();
+        askPermission();
     }
+
+//    @Override
+//    protected void onPostResume() {
+//        super.onPostResume();
+//        refreshEntries();
+//    }
 
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
