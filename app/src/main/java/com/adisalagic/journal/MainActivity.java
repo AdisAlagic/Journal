@@ -252,10 +252,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Submits new customer into database
+     * Submits a new customer into the database
      *
      * @param view Needed for database init
-     * @return <code>true</code> if ok
+     * @return <code>true</code> if OK
      */
     public boolean submit(View view) {
         customers = new Customers();

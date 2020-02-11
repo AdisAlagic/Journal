@@ -69,7 +69,7 @@ public class DBClass extends SQLiteOpenHelper {
     /**
      * Sets up table's columns
      *
-     * @param cursor Needed for init
+     * @param cursor Needed for an init
      */
     private void setEntryTable(Cursor cursor) {
         ID       = cursor.getColumnIndex("id");
@@ -80,7 +80,7 @@ public class DBClass extends SQLiteOpenHelper {
 
 
     /**
-     * Adds customer in database
+     * Adds customer in the database
      *
      * @param db       database
      * @param customer customer, that will be add
@@ -92,7 +92,7 @@ public class DBClass extends SQLiteOpenHelper {
     }
 
     /**
-     * Adds entry in database
+     * Adds entry in the database
      *
      * @param db        database
      * @param customers entry, that will be add
@@ -149,7 +149,7 @@ public class DBClass extends SQLiteOpenHelper {
     }
 
     /**
-     * Gives customer
+     * Gives the customer
      *
      * @param db       database
      * @param id       id of the entry
@@ -182,7 +182,7 @@ public class DBClass extends SQLiteOpenHelper {
     }
 
     /**
-     * Gives human id from name
+     * Gives the human id from the name
      *
      * @param db   database
      * @param name Name of the customer
@@ -204,7 +204,7 @@ public class DBClass extends SQLiteOpenHelper {
     }
 
     /**
-     * Gives names for main_activity list
+     * Give names for main_activity list
      *
      * @param db database
      * @return <code>ArrayList</code> with names
@@ -319,7 +319,7 @@ public class DBClass extends SQLiteOpenHelper {
     }
 
     /**
-     * Changes data about customer
+     * Changes data about the customer
      *
      * @param db       database
      * @param customer <code>Customers</code> as <code>ContentValues</code> for inserting in DB
@@ -359,8 +359,8 @@ public class DBClass extends SQLiteOpenHelper {
     /**
      * Gives NOT NULL string from <code>Cursor</code>
      *
-     * @param column_name From what column we getting string
-     * @param cursor      What do we use to get string
+     * @param column_name Specifies the column of string we getting
+     * @param cursor      Specifies the cursor
      * @return NOT NULL <code>String</code>
      */
     private String getSaveString(String column_name, Cursor cursor) {

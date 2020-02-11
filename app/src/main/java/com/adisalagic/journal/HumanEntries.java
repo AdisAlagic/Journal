@@ -116,11 +116,16 @@ public class HumanEntries extends AppCompatActivity {
                         humans.setExtra(extra.getText().toString());
                         humans.setId_entry(customers.getId());
                         humans.setId(id_human);
+                        humans.setPrice(price.getText().toString());
+                        try {
+                            humans.setDiscount(Integer.parseInt(discount.getText().toString()));
+                        } catch (Exception e) {
+                            humans.setDiscount(0);
+                        }
                         humans.setsDayOfVisit(dayOfVisit.getText().toString());
                         humans.setTimeOfVisit(timeOfVisit.getText().toString());
                         long res = dbClass.addEntry(dbClass.getWritableDatabase(), humans);
                         dialog.dismiss();
-                        refreshEntries(id_human);
                     }
                 });
                 dialog.show();
