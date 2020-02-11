@@ -142,6 +142,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dbClass.backUpBD(v.getContext());
+                        Toast.makeText(v.getContext(), "Успешно!", Toast.LENGTH_SHORT).show();
                         dialog.dismiss();
                     }
                 });

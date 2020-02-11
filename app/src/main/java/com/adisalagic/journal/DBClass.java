@@ -420,31 +420,36 @@ public class DBClass extends SQLiteOpenHelper {
         db.update("Entry", contentValues, "id IS " + id_entry + " AND id_people IS " + id_human, null);
     }
 
-    public void backUpBD(Context context) {
+    public boolean backUpBD(Context context) {
         try {
             File sd   = Environment.getExternalStorageDirectory();
             File data = Environment.getDataDirectory();
 
             if (sd.canWrite()) {
-                String currentDBPath = "//data//com.adisalagic.journal//databases//customers";
+                String currentDBPath = this.getWritableDatabase().getPath();
                 String backupDBPath  = "customers";
-                File   currentDB     = new File(data, currentDBPath);
+                File   currentDB     = new File(currentDBPath);
                 File   backupDB      = new File(sd, backupDBPath);
                 if (!backupDB.exists()) {
                     backupDB.createNewFile();
                 }
+
                 if (currentDB.exists()) {
                     FileChannel src = new FileInputStream(currentDB).getChannel();
                     FileChannel dst = new FileOutputStream(backupDB).getChannel();
                     dst.transferFrom(src, 0, src.size());
                     src.close();
                     dst.close();
+                } else {
+                    Toast.makeText(context, "Ошибка копирования текущей БД", Toast.LENGTH_SHORT).show();
+                    return false;
                 }
             }
         } catch (Exception e) {
             Toast.makeText(context, "Не удалось скопировать Базу Данных!", Toast.LENGTH_LONG).show();
         }
-        Toast.makeText(context, "База данных успешно скопирована!", Toast.LENGTH_SHORT).show();
+        return true;
+//        Toast.makeText(context, "База данных успешно скопирована!", Toast.LENGTH_SHORT).show();
     }
 
     public void restore(Context context) {
@@ -453,9 +458,9 @@ public class DBClass extends SQLiteOpenHelper {
             File data = Environment.getDataDirectory();
 
             if (sd.canWrite()) {
-                String currentDBPath = "//data//com.adisalagic.journal//databases//customers";
+                String currentDBPath = this.getWritableDatabase().getPath();
                 String backupDBPath  = "customers";
-                File   currentDB     = new File(data, currentDBPath);
+                File   currentDB     = new File(currentDBPath);
                 File   backupDB      = new File(sd, backupDBPath);
 
                 if (currentDB.exists()) {

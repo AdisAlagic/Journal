@@ -185,4 +185,12 @@ public class HumanEntries extends AppCompatActivity {
             refreshEntries(dbClass.getHumanId(dbClass.getWritableDatabase(), customers.getFullName()));
         }
     }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus) {
+            refreshEntries(customers.getId());
+        }
+    }
 }
