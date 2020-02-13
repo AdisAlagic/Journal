@@ -93,7 +93,7 @@ public class NameCustomer extends Fragment {
                         surname.setText(data[0]);
                         patronymic.setText(data[2]);
                         final DBClass   dbClass   = new DBClass(v.getContext());
-                        dbClass.backUpBD(v.getContext());
+                        dbClass.backUpBD();
                         final Customers customers = dbClass.getCustomerNameById(dbClass.getWritableDatabase(), id);
                         birthday.setText(Html.fromHtml("<u>" + customers.getBirthday()
                                 + "<u>", Html.FROM_HTML_MODE_COMPACT));
@@ -121,7 +121,7 @@ public class NameCustomer extends Fragment {
                         button.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                dbClass.backUpBD(v.getContext());
+                                dbClass.backUpBD();
                                 customers.setBirthday(birthday.getText().toString());
                                 customers.setId(id);
                                 customers.setPhoneNum(phone.getUnmaskedText());
@@ -148,7 +148,6 @@ public class NameCustomer extends Fragment {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         DBClass dbClass = new DBClass(v.getContext());
-                        dbClass.backUpBD(v.getContext());
                         if (dbClass.deleteCustomer(dbClass.getWritableDatabase(), id)) {
                             Toast.makeText(v.getContext(), "Удаление завершено!", Toast.LENGTH_SHORT).show();
                         } else {

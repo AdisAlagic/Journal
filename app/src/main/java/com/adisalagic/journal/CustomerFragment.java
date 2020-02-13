@@ -64,7 +64,6 @@ public class CustomerFragment extends Fragment {
                 builder1.setNegativeButton("Удалить", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        dbClass.backUpBD(v.getContext());
                         dbClass.deleteEntry(dbClass.getWritableDatabase(), id);
                     }
                 });
@@ -139,7 +138,6 @@ public class CustomerFragment extends Fragment {
                         submit.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                dbClass.backUpBD(v.getContext());
                                 Customers updatedCustomer = new Customers();
                                 updatedCustomer.setService(service.getText().toString());
                                 int id_human = dbClass.getHumanId(dbClass.getWritableDatabase(), customers.getFullName());

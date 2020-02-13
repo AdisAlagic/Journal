@@ -127,7 +127,7 @@ public class MainActivity extends AppCompatActivity {
                 builder.setPositiveButton("Да", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        dbClass.restore(v.getContext());
+                        dbClass.restore();
                         Toast.makeText(v.getContext(), "Успешно!", Toast.LENGTH_LONG).show();
                         dialog.dismiss();
                     }
@@ -141,7 +141,7 @@ public class MainActivity extends AppCompatActivity {
                 builder.setNeutralButton("Хочу сохранить!", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        dbClass.backUpBD(v.getContext());
+                        dbClass.backUpBD();
                         Toast.makeText(v.getContext(), "Успешно!", Toast.LENGTH_SHORT).show();
                         dialog.dismiss();
                     }

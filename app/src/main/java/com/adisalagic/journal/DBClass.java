@@ -15,14 +15,15 @@ import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 
 public class DBClass extends SQLiteOpenHelper {
-    private int ID;
-    private int PRICE;
-    private int SERVICE;
-    private int DISCOUNT;
-
+    private int     ID;
+    private int     PRICE;
+    private int     SERVICE;
+    private int     DISCOUNT;
+    private Context context;
 
     public DBClass(Context context) {
         super(context, "customers", null, 1);
+        this.context = context;
     }
 
     @Override
@@ -275,6 +276,7 @@ public class DBClass extends SQLiteOpenHelper {
      * @return <code>true</code> if ok, <code>false</code> otherwise
      */
     public boolean deleteEntry(SQLiteDatabase db, int id) {
+        backUpBD();
         return db.delete("Entry", "id IS " + id, null) > 0;
     }
 
@@ -286,6 +288,7 @@ public class DBClass extends SQLiteOpenHelper {
      * @return <code>true</code> if ok, <code>false</code> otherwise
      */
     public boolean deleteCustomer(SQLiteDatabase db, int id) {
+        backUpBD();
         ArrayList<Customers> list = getEntries(db, id);
         for (int i = 0; i < list.size(); i++) {
             deleteEntry(db, list.get(i).getId_entry());
@@ -420,7 +423,7 @@ public class DBClass extends SQLiteOpenHelper {
         db.update("Entry", contentValues, "id IS " + id_entry + " AND id_people IS " + id_human, null);
     }
 
-    public boolean backUpBD(Context context) {
+    public boolean backUpBD() {
         try {
             File sd   = Environment.getExternalStorageDirectory();
             File data = Environment.getDataDirectory();
@@ -452,7 +455,7 @@ public class DBClass extends SQLiteOpenHelper {
 //        Toast.makeText(context, "База данных успешно скопирована!", Toast.LENGTH_SHORT).show();
     }
 
-    public void restore(Context context) {
+    public void restore() {
         try {
             File sd   = Environment.getExternalStorageDirectory();
             File data = Environment.getDataDirectory();

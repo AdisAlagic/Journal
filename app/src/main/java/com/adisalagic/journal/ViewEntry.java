@@ -169,6 +169,7 @@ public class ViewEntry extends AppCompatActivity {
                                 humanId, id);
                         updatedCustomer.setFullName(customers.getFullName());
                         updatedCustomer.setPhoneNum(customers.getPhoneNum());
+                        updatedCustomer.setBirthday(customers.getBirthday());
                         dialog2.dismiss();
                         reloadText(updatedCustomer);
                     }
@@ -181,6 +182,7 @@ public class ViewEntry extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 DBClass dbClass = new DBClass(v.getContext());
+                dbClass.backUpBD();
                 if (dbClass.deleteEntry(dbClass.getWritableDatabase(), id)) {
                     Toast.makeText(v.getContext(), "Успешно!", Toast.LENGTH_SHORT).show();
                     afterDelete(true);
