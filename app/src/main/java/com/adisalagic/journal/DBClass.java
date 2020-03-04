@@ -22,7 +22,7 @@ public class DBClass extends SQLiteOpenHelper {
     private Context context;
 
     public DBClass(Context context) {
-        super(context, "customers", null, 1);
+        super(context, "customers", null, 2);
         this.context = context;
     }
 
@@ -52,11 +52,13 @@ public class DBClass extends SQLiteOpenHelper {
                 "  \"extra_info\" TEXT,\n" +
                 "  FOREIGN KEY (\"id_people\") REFERENCES \"Customer\" (\"id\") ON DELETE CASCADE ON UPDATE NO ACTION\n" +
                 ");");
+
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         switch (oldVersion) {
+            case 0:
             case 1:
                 db.execSQL("create table Entry_dg_tmp( id INTEGER not null primary key autoincrement, id_people INTEGER not null references Customer on delete cascade,service TEXT(255),day_of_visit TEXT(255),time_of_visit TEXT(10),today TEXT(255),price TEXT,discount INTEGER,extra TEXT(255),extra_info TEXT);");
                 db.execSQL("insert into Entry_dg_tmp(id, id_people, service, day_of_visit, time_of_visit, today, price, discount, extra, extra_info) select id, id_people, service, day_of_visit, time_of_visit, today, price, discount, extra, extra_info from Entry;");
@@ -91,6 +93,7 @@ public class DBClass extends SQLiteOpenHelper {
         ContentValues contentValues = customer.toContentValuesCustomer();
         return db.insertWithOnConflict("Customer", null, contentValues, SQLiteDatabase.CONFLICT_FAIL);
     }
+
 
     /**
      * Adds entry in the database
@@ -299,7 +302,7 @@ public class DBClass extends SQLiteOpenHelper {
     }
 
     /**
-     * Gives short info about customer
+     * Gives short info about the customer
      *
      * @param db database
      * @param id id of the customer
@@ -424,33 +427,36 @@ public class DBClass extends SQLiteOpenHelper {
     }
 
     public boolean backUpBD() {
-        try {
-            File sd   = Environment.getExternalStorageDirectory();
-            File data = Environment.getDataDirectory();
-
-            if (sd.canWrite()) {
-                String currentDBPath = this.getWritableDatabase().getPath();
-                String backupDBPath  = "customers";
-                File   currentDB     = new File(currentDBPath);
-                File   backupDB      = new File(sd, backupDBPath);
-                if (!backupDB.exists()) {
-                    backupDB.createNewFile();
-                }
-
-                if (currentDB.exists()) {
-                    FileChannel src = new FileInputStream(currentDB).getChannel();
-                    FileChannel dst = new FileOutputStream(backupDB).getChannel();
-                    dst.transferFrom(src, 0, src.size());
-                    src.close();
-                    dst.close();
-                } else {
-                    Toast.makeText(context, "Ошибка копирования текущей БД", Toast.LENGTH_SHORT).show();
-                    return false;
-                }
-            }
-        } catch (Exception e) {
-            Toast.makeText(context, "Не удалось скопировать Базу Данных!", Toast.LENGTH_LONG).show();
-        }
+//        try {
+//            File sd   = Environment.getExternalStorageDirectory();
+//            File data = Environment.getDataDirectory();
+//            if (sd.canWrite()) {
+//                String currentDBPath = this.getWritableDatabase().getPath();
+//                String backupDBPath  = "Customers/customers";
+//                File   currentDB     = new File(currentDBPath);
+//                File   backupDB      = new File(sd, backupDBPath);
+//                if (backupDB.mkdirs()){
+//                    if (!backupDB.exists()) {
+//                        backupDB.createNewFile();
+//                    }
+//                }else {
+//                    return false;
+//                }
+//
+//                if (currentDB.exists()) {
+//                    FileChannel src = new FileInputStream(currentDB).getChannel();
+//                    FileChannel dst = new FileOutputStream(backupDB).getChannel();
+//                    dst.transferFrom(src, 0, src.size());
+//                    src.close();
+//                    dst.close();
+//                } else {
+//                    Toast.makeText(context, "Ошибка копирования текущей БД", Toast.LENGTH_SHORT).show();
+//                    return false;
+//                }
+//            }
+//        } catch (Exception e) {
+//            Toast.makeText(context, "Не удалось скопировать Базу Данных!", Toast.LENGTH_LONG).show();
+//        }
         return true;
 //        Toast.makeText(context, "База данных успешно скопирована!", Toast.LENGTH_SHORT).show();
     }
@@ -466,6 +472,10 @@ public class DBClass extends SQLiteOpenHelper {
                 File   currentDB     = new File(currentDBPath);
                 File   backupDB      = new File(sd, backupDBPath);
 
+                if (backupDB.exists()) {
+                    Toast.makeText(context, "Exists", Toast.LENGTH_LONG).show();
+                }
+
                 if (currentDB.exists()) {
                     FileChannel src = new FileInputStream(backupDB).getChannel();
                     FileChannel dst = new FileOutputStream(currentDB).getChannel();
@@ -479,6 +489,8 @@ public class DBClass extends SQLiteOpenHelper {
             //ignored
         }
     }
+
+    //TODO Copy in dir files
 
 //    public void backUpDB(Activity activity) {
 //        if (ContextCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE)
@@ -525,4 +537,5 @@ public class DBClass extends SQLiteOpenHelper {
 //
 //        }
 //    }
+
 }
