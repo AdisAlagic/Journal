@@ -252,7 +252,7 @@ public class Customers {
         return customers;
     }
 
-    ContentValues toContentValuesCustomer() {
+    ContentValues toContentValues() {
         ContentValues contentValues = new ContentValues();
         contentValues.put("full_name", getFullName());
         contentValues.put("phone_num", getPhoneNum());

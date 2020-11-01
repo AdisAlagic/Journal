@@ -2,6 +2,7 @@ package com.adisalagic.journal;
 
 import android.Manifest;
 import android.app.DatePickerDialog;
+import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
@@ -27,7 +28,6 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.github.pinball83.maskededittext.MaskedEditText;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -121,46 +121,39 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
-                Snackbar.make(v, "К сожалению, сделать резевную копию БД нельзя", Snackbar.LENGTH_LONG)
-                        .setAction("Восстановить БД", new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                DBClass dbClass = new DBClass(v.getContext());
-                                dbClass.restore();
-                            }
-                        });
-//                final DBClass       dbClass = new DBClass(v.getContext());
-//                AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
-//                builder.setMessage("Вы хотите восстановить базу данных?");
-//                builder.setPositiveButton("Да", new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialog, int which) {
-//                        dbClass.restore();
-//                        Toast.makeText(v.getContext(), "Успешно!", Toast.LENGTH_LONG).show();
-//                        dialog.dismiss();
-//                    }
-//                });
-//                builder.setNegativeButton("Нет", new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialog, int which) {
-//                        dialog.dismiss();
-//                    }
-//                });
-//                builder.setNeutralButton("Хочу сохранить!", new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialog, int which) {
-//                        if (dbClass.backUpBD()){
-//                            Toast.makeText(v.getContext(), "Успешно!", Toast.LENGTH_SHORT).show();
-//                        }else {
-//                            Toast.makeText(v.getContext(), "Ошибка!", Toast.LENGTH_SHORT).show();
-//                        }
-//                        dialog.dismiss();
-//                    }
-//                });
-//                builder.create().show();
-//
-//                refreshEntries();
-//                dbClass.close();
+
+                final DBClass       dbClass = new DBClass(v.getContext());
+                AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
+                builder.setMessage("Вы хотите восстановить базу данных?");
+                builder.setPositiveButton("Да", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dbClass.restore();
+                        Toast.makeText(v.getContext(), "Успешно!", Toast.LENGTH_LONG).show();
+                        dialog.dismiss();
+                    }
+                });
+                builder.setNegativeButton("Нет", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                builder.setNeutralButton("Хочу сохранить!", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (dbClass.backUpBD()) {
+                            Toast.makeText(v.getContext(), "Успешно!", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(v.getContext(), "Ошибка!", Toast.LENGTH_SHORT).show();
+                        }
+                        dialog.dismiss();
+                    }
+                });
+                builder.create().show();
+
+                refreshEntries();
+                dbClass.close();
             }
         });
     }

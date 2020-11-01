@@ -129,7 +129,7 @@ public class NameCustomer extends Fragment {
                                 customers.setSurname(surname.getText().toString());
                                 customers.setPatronymic(patronymic.getText().toString());
                                 customers.setFullName();
-                                ContentValues res = customers.toContentValuesCustomer();
+                                ContentValues res = customers.toContentValues();
                                 dbClass.changeName(dbClass.getWritableDatabase(), res, id);
                                 dialog1.dismiss();
                                 Toast.makeText(v.getContext(), "Успешно!", Toast.LENGTH_SHORT).show();

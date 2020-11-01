@@ -11,8 +11,10 @@ import android.widget.Toast;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class DBClass extends SQLiteOpenHelper {
     private int     ID;
@@ -90,7 +92,7 @@ public class DBClass extends SQLiteOpenHelper {
      * @return rowId of the new created row
      */
     long addCustomer(SQLiteDatabase db, Customers customer) {
-        ContentValues contentValues = customer.toContentValuesCustomer();
+        ContentValues contentValues = customer.toContentValues();
         return db.insertWithOnConflict("Customer", null, contentValues, SQLiteDatabase.CONFLICT_FAIL);
     }
 
@@ -427,38 +429,58 @@ public class DBClass extends SQLiteOpenHelper {
     }
 
     public boolean backUpBD() {
-//        try {
-//            File sd   = Environment.getExternalStorageDirectory();
-//            File data = Environment.getDataDirectory();
-//            if (sd.canWrite()) {
-//                String currentDBPath = this.getWritableDatabase().getPath();
-//                String backupDBPath  = "Customers/customers";
-//                File   currentDB     = new File(currentDBPath);
-//                File   backupDB      = new File(sd, backupDBPath);
-//                if (backupDB.mkdirs()){
-//                    if (!backupDB.exists()) {
-//                        backupDB.createNewFile();
-//                    }
-//                }else {
-//                    return false;
-//                }
-//
-//                if (currentDB.exists()) {
-//                    FileChannel src = new FileInputStream(currentDB).getChannel();
-//                    FileChannel dst = new FileOutputStream(backupDB).getChannel();
-//                    dst.transferFrom(src, 0, src.size());
-//                    src.close();
-//                    dst.close();
-//                } else {
-//                    Toast.makeText(context, "Ошибка копирования текущей БД", Toast.LENGTH_SHORT).show();
-//                    return false;
-//                }
-//            }
-//        } catch (Exception e) {
-//            Toast.makeText(context, "Не удалось скопировать Базу Данных!", Toast.LENGTH_LONG).show();
-//        }
+        try {
+            File sd   = Environment.getExternalStorageDirectory();
+            File data = Environment.getDataDirectory();
+            if (sd.canWrite()) {
+                String currentDBPath = this.getWritableDatabase().getPath();
+                String backupDBPath  = "Customers/customers";
+                File   currentDB     = new File(currentDBPath);
+                File   backupDB      = new File(sd, backupDBPath);
+                if (backupDB.mkdirs()) {
+                    if (backupDB.delete()) {
+                        backupDB.createNewFile();
+                    }
+                }
+                if (currentDB.exists()) {
+                    if (currentDB.isDirectory()) {
+                        for (File file : currentDB.listFiles()) {
+                            File       end     = new File(backupDB.getParentFile().getAbsolutePath());
+                            FileWriter writer  = new FileWriter(end);
+                            Scanner    scanner = new Scanner(file);
+                            while (scanner.hasNextByte()) {
+                                writer.write(scanner.nextByte());
+                            }
+                            writer.close();
+                            scanner.close();
+                        }
+                    } else {
+                        Scanner scanner = new Scanner(currentDB);
+                        File    end     = new File(backupDB.getAbsolutePath());
+                        if (!end.exists()) {
+                            end.createNewFile();
+                        } else {
+                            end.delete();
+                            end.createNewFile();
+                        }
+                        FileWriter writer = new FileWriter(end);
+                        while (scanner.hasNextByte()) {
+                            writer.write(scanner.nextByte());
+                        }
+                        writer.close();
+                        scanner.close();
+                    }
+                } else {
+                    Toast.makeText(context, "Ошибка копирования текущей БД", Toast.LENGTH_SHORT).show();
+                    return false;
+                }
+            }
+        } catch (Exception e) {
+            Toast.makeText(context, "Не удалось скопировать Базу Данных!", Toast.LENGTH_LONG).show();
+            return false;
+        }
+        Toast.makeText(context, "База данных успешно скопирована!", Toast.LENGTH_SHORT).show();
         return true;
-//        Toast.makeText(context, "База данных успешно скопирована!", Toast.LENGTH_SHORT).show();
     }
 
     public void restore() {
@@ -536,6 +558,29 @@ public class DBClass extends SQLiteOpenHelper {
 //            }
 //
 //        }
+//    }
+
+//    public void bdToDrive() {
+//        File   bds   = context.getDatabasePath(getDatabaseName()).getParentFile();
+//        JacksonFactory factory = new JacksonFactory();
+//        Drive drive = new Drive(new HttpTransport() {
+//            @Override
+//            protected LowLevelHttpRequest buildRequest(String method, String url) throws IOException {
+//                return null;
+//            }
+//        }, factory, null);
+//        File[] files = bds.listFiles();
+//        for (int i = 0; i < bds.listFiles().length; i++) {
+//            try {
+//                com.google.api.services.drive.model.File metaData = new com.google.api.services.drive.model.File();
+//                metaData.setName("Customers");
+//                metaData.setParents(Collections.singletonList(files[i].getName()));
+//                FileContent content = new FileContent("application/octet-stream", bds);
+//                drive.files().create(metaData, content).setFields("id").execute();
+//            }catch (Exception e){}
+//        }
+////D:\IDEs\AndroidStudioProjects\app\src\main\java\com\adisalagic
+//
 //    }
 
 }
