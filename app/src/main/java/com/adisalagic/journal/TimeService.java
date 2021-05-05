@@ -108,8 +108,16 @@ public class TimeService {
         return miliseconds;
     }
 
-    public void setMiliseconds(int miliseconds) {
+    public void setMiliseconds(long miliseconds) {
         this.miliseconds = miliseconds;
+        correctTime();
+    }
+
+    public void clear(){
+        this.hours = 0;
+        this.minutes = 0;
+        this.seconds = 0;
+        this.miliseconds = 0;
     }
 
     public int getTotalHours() {
@@ -136,7 +144,9 @@ public class TimeService {
         if (onlyHoursAndMinutes) {
             return h + ":" + m;
         }else {
-            return h + ":" + m + ":" + s + "." + ms;
+            return h + ":" + m + ":" + s
+//                    + ms
+                    ;
         }
     }
 

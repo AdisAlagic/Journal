@@ -1,20 +1,14 @@
 <resources>
     <string name="app_name">Journal</string>
-    <string name="search_hint">Поиск</string>
-    <string name="name">Имя</string>
-    <string name="surname">Фамилия</string>
-    <string name="patronymic">Отчество</string>
-    <string name="birthday">День рождения</string>
-    <string name="service">Услуга</string>
-    <string name="price">Цена</string>
-    <string name="day_of_visit">День посещения</string>
-    <string name="extra_info">Краткое примечание</string>
-    <string name="other">Примечание</string>
-    <string name="discount">Скидка</string>
-    <string name="submit">Добавить</string>
-    <string name="full_name">ФИО</string>
-    <string name="time_of_visit">Время посещения</string>
-    <string name="phoneNum">Номер телефона</string>
-    <string name="delete">Удалить</string>
-    <string name="change">Изменить</string>
+    <string name="phone_mask">+7 (***) ***-**-**</string>
+    <string name="phone_view">Телефон: \n%s</string>
+    <string name="birthday_view">День рождения: \n%s</string>
+    <string name="service_view">Услуга: %s</string>
+    <string name="price_view">Цена: %s</string>
+    <string name="day_of_visit_view">День посещения: %s</string>
+    <string name="time_of_visit_view">Время посещения: %s</string>
+    <string name="discount_view">Скидка: %d₽</string>
+    <string name="extra_view">Краткое примечание: %s</string>
+    <string name="extra_info_view">Примечание:\n%s</string>
+    <string name="today_view">Дата создания записи: %s</string>
 </resources>
